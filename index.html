@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram User Data</title>
+  <script>
+    // Function to get query parameters from the URL
+    function getQueryParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const username = urlParams.get('username'); // Fetch username from URL
+      return { username };
+    }
+
+    // Function to log user data to console
+    function logUserData() {
+      const data = getQueryParams();
+      console.log('Username:', data.username); // Log the username to console
+      // You can log other parameters or send them to a server as needed
+    }
+
+    window.onload = logUserData; // Call the function when the page loads
+  </script>
+</head>
+<body>
+  <h1>Welcome to the Page!</h1>
+  <p>Check your browser console for the logged data.</p>
+</body>
+</html>
