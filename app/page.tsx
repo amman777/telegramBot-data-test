@@ -502,7 +502,7 @@ export default function Home() {
 
       {/* Display Channel Link */}
       <h1 className="text-2xl font-bold mt-6 mb-4">Channel Link</h1>
-      {channelLink ? (
+      {channelLink && typeof channelLink === 'string' ? (
         <a href={channelLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
           {channelLink}
         </a>
@@ -512,3 +512,6 @@ export default function Home() {
     </main>
   )
 }
+
+
+
