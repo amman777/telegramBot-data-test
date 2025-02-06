@@ -458,7 +458,7 @@ export default function Home() {
       operation: "fetch-channel-link",
       data: JSON.stringify({ encrpyted_name: encryptedName })
     };
-
+  
     try {
       console.log("Fetching channel link with:", payload);
       const response = await fetch(API_ENDPOINT, {
@@ -468,9 +468,8 @@ export default function Home() {
         },
         body: JSON.stringify(payload)
       });
-
-      const result = await response.json(); // Parse response as JSON
-      const channelLink = JSON.parse(result); // Extract the actual link
+  
+      const channelLink = await response.text(); // Directly get plain text response
   
       console.log("Channel link fetched:", channelLink);
   
@@ -485,6 +484,7 @@ export default function Home() {
       console.error("Error fetching channel link:", error);
     }
   };
+  
 
   return (
     <main className="p-4">
