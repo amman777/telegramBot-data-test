@@ -320,7 +320,7 @@ export default function Home() {
       operation: "fetch-channel-link",
       data: JSON.stringify({ encrpyted_name: encryptedName })
     };
-
+    console.log(payload)
     try {
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
