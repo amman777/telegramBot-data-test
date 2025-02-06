@@ -469,15 +469,17 @@ export default function Home() {
         body: JSON.stringify(payload)
       });
 
-      const result = await response.json();
-
-      console.log("Channel link fetched:", result);
-      // Ensure the fetched result.link is a valid string before redirecting
-      if (result && typeof result.link === 'string' && result.link.startsWith("https://t.me/")) {
-        console.log("Redirecting to:", result.link);
-        window.location.href = result.link;
+      const result = await response.json(); // Parse response as JSON
+      const channelLink = JSON.parse(result); // Extract the actual link
+  
+      console.log("Channel link fetched:", channelLink);
+  
+      // Ensure the fetched link is a valid Telegram link before redirecting
+      if (channelLink.startsWith("https://t.me/")) {
+        console.log("Redirecting to:", channelLink);
+        window.location.href = channelLink; // Redirect
       } else {
-        console.error("Invalid channel link received:", result);
+        console.error("Invalid channel link received:", channelLink);
       }
     } catch (error) {
       console.error("Error fetching channel link:", error);
