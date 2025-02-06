@@ -52,7 +52,7 @@ export default function Home() {
       data: JSON.stringify({
         id: user.id.toString(),
         first_name: user.first_name || "None",
-        username: user.username || "None",
+        user_name: user.username || "None",
         last_name: user.last_name || "None"
       })
     };
