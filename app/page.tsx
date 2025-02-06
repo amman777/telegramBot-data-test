@@ -72,10 +72,10 @@
 // parameter extraction
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function Home() {
+function DisplayStartAppParam() {
   const searchParams = useSearchParams()
   const [startAppParam, setStartAppParam] = useState<string | null>(null)
 
@@ -87,9 +87,20 @@ export default function Home() {
   }, [searchParams])
 
   return (
-    <main className="p-4">
+    <div>
       <h1 className="text-2xl font-bold mb-4">Start App Parameter</h1>
       <p>{startAppParam ? startAppParam : 'No parameter found'}</p>
+    </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <main className="p-4">
+      <Suspense fallback={<div>Loading...</div>}>
+        <DisplayStartAppParam />
+      </Suspense>
     </main>
   )
 }
+
