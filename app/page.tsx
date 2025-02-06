@@ -47,21 +47,49 @@
 
 
 // redirect
+// 'use client'
+
+// import { useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
+
+// export default function Home() {
+//   const router = useRouter()
+
+//   useEffect(() => {
+//     window.location.href = "https://t.me/+wS5_mahZWWk3OTI1"
+//   }, [])
+
+//   return (
+//     <main className="p-4">
+//       <div>Redirecting...</div>
+//     </main>
+//   )
+// }
+
+
+
+
+// parameter extraction
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function Home() {
-  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [startAppParam, setStartAppParam] = useState<string | null>(null)
 
   useEffect(() => {
-    window.location.href = "https://t.me/+wS5_mahZWWk3OTI1"
-  }, [])
+    const param = searchParams.get('startapp')
+    if (param) {
+      setStartAppParam(param)
+    }
+  }, [searchParams])
 
   return (
     <main className="p-4">
-      <div>Redirecting...</div>
+      <h1 className="text-2xl font-bold mb-4">Start App Parameter</h1>
+      <p>{startAppParam ? startAppParam : 'No parameter found'}</p>
     </main>
   )
 }
