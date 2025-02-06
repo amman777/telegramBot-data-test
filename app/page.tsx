@@ -72,35 +72,23 @@
 // parameter extraction
 'use client'
 
-import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import WebApp from '@twa-dev/sdk'
+import { useEffect, useState } from 'react'
 
-function DisplayStartAppParam() {
-  const searchParams = useSearchParams()
+export default function Home() {
   const [startAppParam, setStartAppParam] = useState<string | null>(null)
 
   useEffect(() => {
-    const param = searchParams.get('startapp')
-    if (param) {
-      setStartAppParam(param)
+    // Ensure WebApp is available
+    if (WebApp.initDataUnsafe.start_param) {
+      setStartAppParam(WebApp.initDataUnsafe.start_param)
     }
-  }, [searchParams])
+  }, [])
 
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Start App Parameter</h1>
-      <p>{startAppParam ? startAppParam : 'No parameter found'}</p>
-    </div>
-  )
-}
-
-export default function Home() {
   return (
     <main className="p-4">
-      <Suspense fallback={<div>Loading...</div>}>
-        <DisplayStartAppParam />
-      </Suspense>
+      <h1 className="text-2xl font-bold mb-4">Start App Parameter</h1>
+      <p>{startAppParam ? startAppParam : 'No parameter found'}</p>
     </main>
   )
 }
-
