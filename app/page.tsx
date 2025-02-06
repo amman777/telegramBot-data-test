@@ -469,7 +469,8 @@ export default function Home() {
         body: JSON.stringify(payload)
       });
   
-      const channelLink = await response.text(); // Directly get plain text response
+      const channelLink = (await response.text()).replace(/^"|"$/g, '');
+      // Directly get plain text response
   
       console.log("Channel link fetched:", channelLink);
   
