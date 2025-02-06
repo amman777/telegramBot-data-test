@@ -470,14 +470,18 @@ export default function Home() {
       });
 
       const result = await response.json();
-      if (result && result.link) {
-        setChannelLink(result.link);
-      }
+
       console.log("Channel link fetched:", result);
+      
+      // Redirect if link is available
+      if (result && result.link) {
+        window.location.href = result.link;
+      }
     } catch (error) {
       console.error("Error fetching channel link:", error);
     }
   };
+    
 
   return (
     <main className="p-4">
