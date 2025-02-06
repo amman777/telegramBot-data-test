@@ -489,34 +489,7 @@ export default function Home() {
 
   return (
     <main className="p-4">
-      {/* Display Start App Parameter */}
-      <h1 className="text-2xl font-bold mb-4">Start App Parameter</h1>
-      <p>{startAppParam ? startAppParam : 'No parameter found'}</p>
-
-      {/* Display User Details */}
-      <h1 className="text-2xl font-bold mt-6 mb-4">User Data</h1>
-      {userData ? (
-        <ul>
-          <li><strong>ID:</strong> {userData.id}</li>
-          <li><strong>First Name:</strong> {userData.first_name}</li>
-          <li><strong>Last Name:</strong> {userData.last_name || 'N/A'}</li>
-          <li><strong>Username:</strong> {userData.username || 'N/A'}</li>
-          <li><strong>Language Code:</strong> {userData.language_code}</li>
-          <li><strong>Is Premium:</strong> {userData.is_premium ? 'Yes' : 'No'}</li>
-        </ul>
-      ) : (
-        <div>Fetching user details...</div>
-      )}
-
-      {/* Display Channel Link */}
-      <h1 className="text-2xl font-bold mt-6 mb-4">Channel Link</h1>
-      {channelLink && typeof channelLink === 'string' ? (
-        <a href={channelLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-          {channelLink}
-        </a>
-      ) : (
-        <div>Fetching channel link...</div>
-      )}
+      
     </main>
   )
 }
