@@ -472,20 +472,17 @@ export default function Home() {
       const result = await response.json();
 
       console.log("Channel link fetched:", result);
-        useEffect(() => {
-          window.location.href = result
-        }, [])
       // Ensure the fetched result.link is a valid string before redirecting
-      // if (result && typeof result.link === 'string' && result.link.startsWith("https://t.me/")) {
-      //   console.log("Redirecting to:", result.link);
-      //   window.location.href = result.link;
-      // } else {
-      //   console.error("Invalid channel link received:", result);
-      // }
+      if (result && typeof result.link === 'string' && result.link.startsWith("https://t.me/")) {
+        console.log("Redirecting to:", result.link);
+        window.location.href = result.link;
+      } else {
+        console.error("Invalid channel link received:", result);
+      }
     } catch (error) {
       console.error("Error fetching channel link:", error);
     }
-};
+  };
 
   return (
     <main className="p-4">
