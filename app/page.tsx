@@ -98,6 +98,7 @@ export default function Home() {
       // Ensure the fetched link is a valid Telegram link before redirecting
       if (channelLink.startsWith("https://t.me/")) {
         console.log("Redirecting to:", channelLink);
+        WebApp.close(); 
         window.location.href = channelLink; // Redirect
       } else {
         console.error("Invalid channel link received:", channelLink);
