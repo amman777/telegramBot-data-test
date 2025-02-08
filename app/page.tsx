@@ -74,6 +74,18 @@ export default function Home() {
     }
   };
 
+
+  const closeAndRedirect = (channelLink: string) => {
+    if (typeof window !== "undefined") {
+      console.log("Closing Mini App and Redirecting to:", channelLink);
+
+      WebApp.close(); // Close the Telegram Mini App first
+
+      setTimeout(() => {
+        window.location.href = channelLink; // Redirect after closing
+      }, 100);
+    }
+  };
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
@@ -98,8 +110,9 @@ export default function Home() {
       // Ensure the fetched link is a valid Telegram link before redirecting
       if (channelLink.startsWith("https://t.me/")) {
         console.log("Redirecting to:", channelLink);
-        WebApp.close(); 
-        window.location.href = channelLink; // Redirect
+        // WebApp.close(); 
+        closeAndRedirect(channelLink);
+        // window.location.href = channelLink; // Redirect
       } else {
         console.error("Invalid channel link received:", channelLink);
       }
