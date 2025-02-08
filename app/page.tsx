@@ -79,12 +79,7 @@ export default function Home() {
     if (typeof window !== "undefined") {
       console.log("Closing Mini App and Redirecting to:", channelLink);
       window.location.href = channelLink; 
-       // Close the Telegram Mini App first
-
-      setTimeout(() => {
-        // Redirect after closing
-        WebApp.close();
-      }, 500);
+      WebApp.close()
     }
   };
   const fetchChannelLink = async (encryptedName: string) => {
