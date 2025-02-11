@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = "force-dynamic"; // Prevent Next.js from statically generating this page
 
 import WebApp from '@twa-dev/sdk'
 import { useEffect, useState } from 'react'
@@ -75,13 +76,13 @@ export default function Home() {
   };
 
 
-  const closeAndRedirect = (channelLink: string) => {
-    if (typeof window !== "undefined") {
-      console.log("Closing Mini App and Redirecting to:", channelLink);
-      window.location.href = channelLink; 
-      WebApp.close()
-    }
-  };
+  // const closeAndRedirect = (channelLink: string) => {
+  //   if (typeof window !== "undefined") {
+  //     console.log("Closing Mini App and Redirecting to:", channelLink);
+  //     window.location.href = channelLink; 
+  //     WebApp.close()
+  //   }
+  // };
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
