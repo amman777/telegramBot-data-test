@@ -88,6 +88,41 @@ export default function Home() {
       data: JSON.stringify({ encrpyted_name: encryptedName })
     };
   
+    // try {
+    //   console.log("Fetching channel link with:", payload);
+    //   const response = await fetch(API_ENDPOINT, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(payload)
+    //   });
+  
+    //   const channelLink = (await response.text()).replace(/^"|"$/g, '');
+    //   // Directly get plain text response
+  
+    //   console.log("Channel link fetched:", channelLink);
+  
+    //   // Ensure the fetched link is a valid Telegram link before redirecting
+    //   if (channelLink.startsWith("https://t.me/")) {
+    //     console.log("Redirecting to:", channelLink);
+    //     // WebApp.close(); 
+        
+    //     if (typeof window !== "undefined") {
+    //       console.log("Closing Mini App and Redirecting to:", channelLink);
+    //       window.location.href = channelLink; 
+    //       WebApp.close()
+    //     }
+        
+    //   } else {
+    //     console.error("Invalid channel link received:", channelLink);
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching channel link:", error);
+    // }
+
+
+
     try {
       console.log("Fetching channel link with:", payload);
       const response = await fetch(API_ENDPOINT, {
@@ -95,26 +130,20 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        redirect: "follow"  
       });
-  
-      const channelLink = (await response.text()).replace(/^"|"$/g, '');
-      // Directly get plain text response
-  
-      console.log("Channel link fetched:", channelLink);
-  
-      // Ensure the fetched link is a valid Telegram link before redirecting
-      if (channelLink.startsWith("https://t.me/")) {
-        console.log("Redirecting to:", channelLink);
-        // WebApp.close(); 
-        closeAndRedirect(channelLink);
-        // window.location.href = channelLink; // Redirect
+    
+      if (response.redirected) {
+        console.log("Redirecting automatically to:", response.url);
+        WebApp.close();
       } else {
-        console.error("Invalid channel link received:", channelLink);
+        console.error("Unexpected response, no redirection occurred.");
       }
     } catch (error) {
       console.error("Error fetching channel link:", error);
     }
+    
   };
   
 
