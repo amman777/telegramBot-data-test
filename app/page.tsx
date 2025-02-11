@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     import("@twa-dev/sdk").then((module) => {
       const WebApp = module.default;
-      
+
       if (!WebApp.initDataUnsafe) {
         console.error("Error: WebApp.initDataUnsafe is undefined");
         return;
@@ -77,29 +77,23 @@ export default function Home() {
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
-      data: JSON.stringify({ encrpyted_name: encryptedName }),
+      data: JSON.stringify({ encrpyted_name: encryptedName })
     };
 
     try {
       console.log("Fetching channel link with:", payload);
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        redirect: "follow",
-      });
 
-      if (response.redirected) {
-        console.log("Redirecting automatically to:", response.url);
-      } else {
-        console.error("Unexpected response, no redirection occurred.");
-      }
+      // Instead of fetching, directly redirect to API Gateway
+      window.location.href = API_ENDPOINT + "?operation=fetch-channel-link&data=" + encodeURIComponent(JSON.stringify({ encrpyted_name: encryptedName }));
+
     } catch (error) {
-      console.error("Error fetching channel link:", error);
+      console.error("Error redirecting to channel link:", error);
     }
+
+
   };
 
-  return <main className="p-4"></main>;
+};
+
+return <main className="p-4"></main>;
 }
