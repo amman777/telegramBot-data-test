@@ -89,11 +89,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error redirecting to channel link:", error);
     }
-
-
   };
 
-};
 
-return <main className="p-4"></main>;
+  return <main className="p-4"></main>;
 }
