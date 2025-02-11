@@ -1,12 +1,10 @@
-'use client'
-export const dynamic = "force-dynamic"; // Prevent Next.js from statically generating this page
+"use client";
+export const dynamic = "force-dynamic"; // Prevents static build issues
 
-import WebApp from '@twa-dev/sdk'
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-const API_ENDPOINT = 'https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/telegram-bot-handler';
+const API_ENDPOINT = "https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/telegram-bot-handler";
 
-// Define the interface for user data
 interface UserData {
   id: number;
   first_name: string;
@@ -17,12 +15,13 @@ interface UserData {
 }
 
 export default function Home() {
-  const [startAppParam, setStartAppParam] = useState<string | null>(null)
-  const [userData, setUserData] = useState<UserData | null>(null)
-  const [channelLink, setChannelLink] = useState<string | null>(null)
+  const [startAppParam, setStartAppParam] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
-    try {
+    import("@twa-dev/sdk").then((module) => {
+      const WebApp = module.default;
+      
       if (!WebApp.initDataUnsafe) {
         console.error("Error: WebApp.initDataUnsafe is undefined");
         return;
@@ -37,14 +36,14 @@ export default function Home() {
         const user = WebApp.initDataUnsafe.user as UserData;
         setUserData(user);
 
-        // First, store user data, then fetch the channel link
+        // Store user data and then fetch channel link
         sendUserData(user).then(() => {
           if (param) fetchChannelLink(param);
         });
       }
-    } catch (error) {
-      console.error("Error initializing WebApp:", error);
-    }
+    }).catch((err) => {
+      console.error("Error loading WebApp SDK:", err);
+    });
   }, []);
 
   const sendUserData = async (user: UserData) => {
@@ -54,8 +53,8 @@ export default function Home() {
         id: user.id.toString(),
         first_name: user.first_name || "None",
         user_name: user.username || "None",
-        last_name: user.last_name || "None"
-      })
+        last_name: user.last_name || "None",
+      }),
     };
 
     try {
@@ -63,9 +62,9 @@ export default function Home() {
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -75,85 +74,32 @@ export default function Home() {
     }
   };
 
-
-  // const closeAndRedirect = (channelLink: string) => {
-  //   if (typeof window !== "undefined") {
-  //     console.log("Closing Mini App and Redirecting to:", channelLink);
-  //     window.location.href = channelLink; 
-  //     WebApp.close()
-  //   }
-  // };
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
-      data: JSON.stringify({ encrpyted_name: encryptedName })
+      data: JSON.stringify({ encrpyted_name: encryptedName }),
     };
-  
-    // try {
-    //   console.log("Fetching channel link with:", payload);
-    //   const response = await fetch(API_ENDPOINT, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(payload)
-    //   });
-  
-    //   const channelLink = (await response.text()).replace(/^"|"$/g, '');
-    //   // Directly get plain text response
-  
-    //   console.log("Channel link fetched:", channelLink);
-  
-    //   // Ensure the fetched link is a valid Telegram link before redirecting
-    //   if (channelLink.startsWith("https://t.me/")) {
-    //     console.log("Redirecting to:", channelLink);
-    //     // WebApp.close(); 
-        
-    //     if (typeof window !== "undefined") {
-    //       console.log("Closing Mini App and Redirecting to:", channelLink);
-    //       window.location.href = channelLink; 
-    //       WebApp.close()
-    //     }
-        
-    //   } else {
-    //     console.error("Invalid channel link received:", channelLink);
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching channel link:", error);
-    // }
-
-
 
     try {
       console.log("Fetching channel link with:", payload);
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-        redirect: "follow"  
+        redirect: "follow",
       });
-    
+
       if (response.redirected) {
         console.log("Redirecting automatically to:", response.url);
-        WebApp.close();
       } else {
         console.error("Unexpected response, no redirection occurred.");
       }
     } catch (error) {
       console.error("Error fetching channel link:", error);
     }
-    
   };
-  
 
-  return (
-    <main className="p-4">
-      
-    </main>
-  )
+  return <main className="p-4"></main>;
 }
-
-
-
