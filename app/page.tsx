@@ -76,20 +76,43 @@ export default function Home() {
 
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
-        operation: "fetch-channel-link",
-        data: JSON.stringify({ encrpyted_name: encryptedName })
+      operation: "fetch-channel-link",
+      data: JSON.stringify({ encrpyted_name: encryptedName })
     };
 
     try {
-        console.log("Fetching channel link with:", payload);
-        
-        // Instead of fetching, directly redirect to API Gateway
-        window.location.href = API_ENDPOINT + "?operation=fetch-channel-link&data=" + encodeURIComponent(JSON.stringify({ encrpyted_name: encryptedName }));
-        
+      console.log("Fetching channel link with:", payload);
+
+      const response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.redirected) {
+        console.log("Redirecting automatically to:", response.url);
+        window.location.href = response.url; // Redirect in browser
+        WebApp.close();
+      } else {
+        // Read the response to check for 'Location' header manually
+        const result = await response.json();
+        console.log("Response received:", result);
+
+        const location = response.headers.get("Location");
+        if (location && location.startsWith("https://t.me/")) {
+          console.log("Manually redirecting to:", location);
+          window.location.href = location;
+          WebApp.close();
+        } else {
+          console.error("No valid redirect URL received.");
+        }
+      }
     } catch (error) {
-        console.error("Error redirecting to channel link:", error);
+      console.error("Error fetching channel link:", error);
     }
-};
+  };
 
 
   return <main className="p-4"></main>;
