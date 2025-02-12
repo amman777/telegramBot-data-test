@@ -9,7 +9,7 @@ const API_ENDPOINT = 'https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/te
 interface UserData {
   id: number;
   first_name: string;
-  last_name?: string;
+  last_name?: string; 
   username?: string;
   language_code: string;
   is_premium?: boolean;
@@ -82,7 +82,7 @@ export default function Home() {
       WebApp.close()
     }
   };
-  
+
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
