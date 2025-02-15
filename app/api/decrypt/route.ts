@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+    console.log("Line 4 post")
     try {
         const SECRET_KEY = process.env.SECRET_KEY;
         if (!SECRET_KEY) {
@@ -41,5 +42,6 @@ export async function POST(req: NextRequest) {
 }
 
 export function GET() {
+    console.log("Line 34 get")
     return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 }
