@@ -61,7 +61,7 @@ export default function Home() {
     };
 
     try {
-      console.log("Sending user data:", payload);
+      
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
@@ -71,7 +71,7 @@ export default function Home() {
       });
 
       const result = await response.json();
-      console.log("User data sent successfully:", result);
+     
     } catch (error) {
       console.error("Error sending user data:", error);
     }
@@ -80,20 +80,20 @@ export default function Home() {
 
   const closeAndRedirect = (channelLink: string) => {
     if (typeof window !== "undefined") {
-      console.log("Closing Mini App and Redirecting to:", channelLink);
+    
       window.location.href = channelLink;
       WebApp.close()
     }
   };
   // const fetchChannelLink = async (encryptedName: string) => {
-  //   console.log("Fetch channel link")
+  //  
   //   const payload = {
   //     operation: "fetch-channel-link",
   //     data: JSON.stringify({ encrpyted_name: encryptedName })
   //   };
 
   //   try {
-  //     console.log("Fetching channel link with:", payload);
+  //    
   //     const response = await fetch(API_ENDPOINT, {
   //       method: "POST",
   //       headers: {
@@ -105,11 +105,11 @@ export default function Home() {
   //     const channelLink = (await response.text()).replace(/^"|"$/g, '');
   //     // Directly get plain text response
 
-  //     console.log("Channel link fetched:", channelLink);
+  //  
 
   //     // Ensure the fetched link is a valid Telegram link before redirecting
   //     if (channelLink.startsWith("https://t.me/")) {
-  //       console.log("Redirecting to:", channelLink);
+  //     
   //       // WebApp.close(); 
   //       closeAndRedirect(channelLink);
   //       // window.location.href = channelLink; // Redirect
@@ -122,10 +122,7 @@ export default function Home() {
   // };
 
   const decryptLink = async (encryptedName: string) => {
-    console.log("Inside decryptLink");
     const SECRET_KEY = "hypernotion";
-    console.log("Encrypted Name:", encryptedName);
-
     try {
         // Convert Telegram-safe Base64 back to normal Base64
         let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
@@ -146,7 +143,7 @@ export default function Home() {
 
         // Construct the final channel link
         let channelLink = `https://t.me/+${decryptedText}`;
-        console.log("Redirecting to:", channelLink);
+      
 
         // Redirect the user
         closeAndRedirect(channelLink);
