@@ -4,7 +4,7 @@ import WebApp from '@twa-dev/sdk'
 import { useEffect, useState } from 'react'
 
 const API_ENDPOINT = 'https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/telegram-bot-handler';
-
+const toddle = "hypernotion";
 // Define the interface for user data
 interface UserData {
   id: number;
@@ -38,7 +38,7 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-          const toddle = "hypernotion";
+          
           if (param) decryptLink(param);
 
 
