@@ -26,19 +26,9 @@ export default function Home() {
         console.error("Error: WebApp.initDataUnsafe is undefined");
         return;
       }
-      console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
+     
       // Get startapp parameter safely
       let param = WebApp.initDataUnsafe?.start_param || null;
-      console.log("The params value is", param)
-
-
-      // If start_param is null, extract "id" manually from the URL
-      if (!param && typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-        param = urlParams.get("id") || null;
-      }
-
-      console.log("Final extracted param:", param);
       setStartAppParam(param);
 
       // Get user details safely
@@ -48,13 +38,9 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-          if (param) fetchChannelLink(param);
-          // if (param)  decryptLink(param);
-          // if (param) {
-          //   console.log("Inside if param")
-          //   console.log("param", param)
-          //   decryptLink(param);
-          // }
+    
+          if (param)  decryptLink(param);
+        
 
         });
       }
@@ -99,41 +85,41 @@ export default function Home() {
       WebApp.close()
     }
   };
-  const fetchChannelLink = async (encryptedName: string) => {
-    console.log("Fetch channel link")
-    const payload = {
-      operation: "fetch-channel-link",
-      data: JSON.stringify({ encrpyted_name: encryptedName })
-    };
+  // const fetchChannelLink = async (encryptedName: string) => {
+  //   console.log("Fetch channel link")
+  //   const payload = {
+  //     operation: "fetch-channel-link",
+  //     data: JSON.stringify({ encrpyted_name: encryptedName })
+  //   };
 
-    try {
-      console.log("Fetching channel link with:", payload);
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+  //   try {
+  //     console.log("Fetching channel link with:", payload);
+  //     const response = await fetch(API_ENDPOINT, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       },
+  //       body: JSON.stringify(payload)
+  //     });
 
-      const channelLink = (await response.text()).replace(/^"|"$/g, '');
-      // Directly get plain text response
+  //     const channelLink = (await response.text()).replace(/^"|"$/g, '');
+  //     // Directly get plain text response
 
-      console.log("Channel link fetched:", channelLink);
+  //     console.log("Channel link fetched:", channelLink);
 
-      // Ensure the fetched link is a valid Telegram link before redirecting
-      if (channelLink.startsWith("https://t.me/")) {
-        console.log("Redirecting to:", channelLink);
-        // WebApp.close(); 
-        closeAndRedirect(channelLink);
-        // window.location.href = channelLink; // Redirect
-      } else {
-        console.error("Invalid channel link received:", channelLink);
-      }
-    } catch (error) {
-      console.error("Error fetching channel link:", error);
-    }
-  };
+  //     // Ensure the fetched link is a valid Telegram link before redirecting
+  //     if (channelLink.startsWith("https://t.me/")) {
+  //       console.log("Redirecting to:", channelLink);
+  //       // WebApp.close(); 
+  //       closeAndRedirect(channelLink);
+  //       // window.location.href = channelLink; // Redirect
+  //     } else {
+  //       console.error("Invalid channel link received:", channelLink);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching channel link:", error);
+  //   }
+  // };
 
   const decryptLink = async (encryptedName: string) => {
     console.log("Inside decrpty link")
