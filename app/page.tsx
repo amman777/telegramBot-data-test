@@ -100,10 +100,8 @@ export default function Home() {
         throw new Error(data.error || "Failed to decrypt");
       }
 
-      // Redirect to Telegram channel
       console.log("Redirecting to:", data.channelLink);
       closeAndRedirect(data.channelLink);
-
     } catch (error) {
       console.error("Decryption failed:", error);
     }

@@ -1,17 +1,15 @@
-export default function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Method Not Allowed" });
-    }
+import { NextRequest, NextResponse } from "next/server";
 
-    const SECRET_KEY = process.env.SECRET_KEY;
-    if (!SECRET_KEY) {
-        return res.status(500).json({ error: "Missing SECRET_KEY" });
-    }
-
+export async function POST(req: NextRequest) {
     try {
-        const { encryptedName } = req.body;
+        const SECRET_KEY = process.env.SECRET_KEY;
+        if (!SECRET_KEY) {
+            return NextResponse.json({ error: "Missing SECRET_KEY" }, { status: 500 });
+        }
+
+        const { encryptedName } = await req.json();
         if (!encryptedName) {
-            return res.status(400).json({ error: "Missing encryptedName" });
+            return NextResponse.json({ error: "Missing encryptedName" }, { status: 400 });
         }
 
         // Convert Telegram-safe Base64 back to normal Base64
@@ -34,9 +32,9 @@ export default function handler(req, res) {
         // Construct the final channel link
         let channelLink = `https://t.me/+${decryptedText}`;
 
-        return res.status(200).json({ channelLink });
+        return NextResponse.json({ channelLink });
 
     } catch (error) {
-        return res.status(500).json({ error: "Decryption failed" });
+        return NextResponse.json({ error: "Decryption failed" }, { status: 500 });
     }
 }
