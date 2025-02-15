@@ -27,32 +27,32 @@ export default function Home() {
         return;
       }
 
-      console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
-
-      // Extract the startapp or id parameter
-      let param = WebApp.initDataUnsafe?.start_param || null;
-
-      if (!param && typeof window !== "undefined") {
-        const urlParams = new URLSearchParams(window.location.search);
-        param = urlParams.get("id") || urlParams.get("startapp") || null;
-      }
-
+      // Get startapp parameter safely
+      const param = WebApp.initDataUnsafe?.start_param || null;
+      console.log("The params value is", param)
       setStartAppParam(param);
-      console.log("Extracted Param:", param);
 
+      // Get user details safely
       if (WebApp.initDataUnsafe?.user) {
         const user = WebApp.initDataUnsafe.user as UserData;
         setUserData(user);
 
+        // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
           if (param) fetchChannelLink(param);
+          // if (param)  decryptLink(param);
+          // if (param) {
+          //   console.log("Inside if param")
+          //   console.log("param", param)
+          //   decryptLink(param);
+          // }
+
         });
       }
     } catch (error) {
       console.error("Error initializing WebApp:", error);
     }
   }, []);
-
 
   const sendUserData = async (user: UserData) => {
     const payload = {
@@ -129,7 +129,7 @@ export default function Home() {
   const decryptLink = async (encryptedName: string) => {
     console.log("Inside decrpty link")
     const SECRET_KEY = "hypernotion";
-
+  
     try {
       // Decode Base64 safely
       let decodedBytes;
@@ -139,29 +139,29 @@ export default function Home() {
         console.error("Invalid Base64 encoding:", error);
         return;
       }
-
+  
       // XOR decryption
       let decrypted = "";
       for (let i = 0; i < decodedBytes.length; i++) {
         decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
       }
-
+  
       // Validate if decrypted is a proper Telegram channel name
       if (!decrypted.match(/^[a-zA-Z0-9_]+$/)) {
         console.error("Decryption result is not a valid Telegram username:", decrypted);
         return;
       }
-
+  
       let channelLink = `https://t.me/${decrypted}`;
       console.log("Redirecting to:", channelLink);
-
+  
       // Redirect
       closeAndRedirect(channelLink);
     } catch (error) {
       console.error("Decryption failed:", error);
     }
   };
-
+  
 
   return (
     <main className="p-4">
