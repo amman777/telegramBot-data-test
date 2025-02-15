@@ -38,7 +38,7 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-
+          const toddle = "hypernotion";
           if (param) decryptLink(param);
 
 
@@ -86,30 +86,30 @@ export default function Home() {
     }
   };
   const decryptLink = async (encryptedName: string) => {
-    const SECRET_KEY = "hypernotion";
+    
     try {
-        // Convert Telegram-safe Base64 back to normal Base64
+    
         let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
 
-        // Ensure proper Base64 padding
+      
         paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
-        // Decode Base64
+  
         let encryptedBytes = atob(paddedInput);
 
-        // XOR Decryption
+       
         let decryptedText = "";
         for (let i = 0; i < encryptedBytes.length; i++) {
             decryptedText += String.fromCharCode(
-                encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
+                encryptedBytes.charCodeAt(i) ^ toddle.charCodeAt(i % toddle.length)
             );
         }
 
-        // Construct the final channel link
+       
         let channelLink = `https://t.me/+${decryptedText}`;
       
 
-        // Redirect the user
+        
         closeAndRedirect(channelLink);
     } catch (error) {
         console.error("Decryption failed:", error);
