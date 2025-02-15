@@ -61,7 +61,7 @@ export default function Home() {
     };
 
     try {
-
+      
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
@@ -71,7 +71,7 @@ export default function Home() {
       });
 
       const result = await response.json();
-
+     
     } catch (error) {
       console.error("Error sending user data:", error);
     }
@@ -80,36 +80,42 @@ export default function Home() {
 
   const closeAndRedirect = (channelLink: string) => {
     if (typeof window !== "undefined") {
-
+    
       window.location.href = channelLink;
       WebApp.close()
     }
   };
-
-
   const decryptLink = async (encryptedName: string) => {
+    // const SECRET_KEY = "hypernotion";
+    const SECRET_KEY =  process.env.SECRET_KEY;
     try {
-      console.log("📤 Sending request to /api/decrypt with:", encryptedName); // Check if frontend is making the request
+        // Convert Telegram-safe Base64 back to normal Base64
+        let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
 
-      const response = await fetch("/api/decrypt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ encryptedName }),
-      });
-  
-      console.log("📥 Response received from /api/decrypt:", response.status); // Log API response status
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to decrypt");
-      }
+        // Ensure proper Base64 padding
+        paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
-      console.log("Redirecting to:", data.channelLink);
-      closeAndRedirect(data.channelLink);
+        // Decode Base64
+        let encryptedBytes = atob(paddedInput);
+
+        // XOR Decryption
+        let decryptedText = "";
+        for (let i = 0; i < encryptedBytes.length; i++) {
+            decryptedText += String.fromCharCode(
+                encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
+            );
+        }
+
+        // Construct the final channel link
+        let channelLink = `https://t.me/+${decryptedText}`;
+      
+
+        // Redirect the user
+        closeAndRedirect(channelLink);
     } catch (error) {
-      console.error("Decryption failed:", error);
+        console.error("Decryption failed:", error);
     }
   };
-
 
 
 
