@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
         if (!SECRET_KEY) {
             return NextResponse.json({ error: "Missing SECRET_KEY" }, { status: 500 });
         }
-
+        
         const body = await req.json();
         const { encryptedName } = body;
 

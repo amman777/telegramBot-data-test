@@ -89,12 +89,15 @@ export default function Home() {
 
   const decryptLink = async (encryptedName: string) => {
     try {
+      console.log("📤 Sending request to /api/decrypt with:", encryptedName); // Check if frontend is making the request
+
       const response = await fetch("/api/decrypt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ encryptedName }),
       });
-
+  
+      console.log("📥 Response received from /api/decrypt:", response.status); // Log API response status
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.error || "Failed to decrypt");
