@@ -122,7 +122,8 @@ export default function Home() {
   // };
 
   const decryptLink = async (encryptedName: string) => {
-    const SECRET_KEY = "hypernotion";
+    // const SECRET_KEY = "hypernotion";
+    const SECRET_KEY =  process.env.SECRET_KEY;
     try {
         // Convert Telegram-safe Base64 back to normal Base64
         let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
