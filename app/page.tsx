@@ -26,38 +26,31 @@ export default function Home() {
         console.error("Error: WebApp.initDataUnsafe is undefined");
         return;
       }
-  
-      console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
-  
-      // Extract the `id` from start_param
-      const rawParam = WebApp.initDataUnsafe?.start_param || null;
-      let param = null;
-  
-      if (rawParam) {
-        const match = rawParam.match(/id=([^&]+)/);
-        param = match ? match[1] : null;
-      }
-  
+
+      // Get startapp parameter safely
+      const param = WebApp.initDataUnsafe?.start_param || null;
       setStartAppParam(param);
-      console.log("Extracted ID:", param);
-  
+
+      // Get user details safely
       if (WebApp.initDataUnsafe?.user) {
         const user = WebApp.initDataUnsafe.user as UserData;
         setUserData(user);
-  
+
+        // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
+          // if (param) fetchChannelLink(param);
           if (param) {
-            console.log("Inside if param");
-            console.log("param:", param);
+            console.log("Inside if param")
+            console.log("param", param)
             decryptLink(param);
           }
+
         });
       }
     } catch (error) {
       console.error("Error initializing WebApp:", error);
     }
   }, []);
-  
 
   const sendUserData = async (user: UserData) => {
     const payload = {
