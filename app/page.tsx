@@ -9,7 +9,7 @@ const API_ENDPOINT = 'https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/te
 interface UserData {
   id: number;
   first_name: string;
-  last_name?: string; 
+  last_name?: string;
   username?: string;
   language_code: string;
   is_premium?: boolean;
@@ -38,7 +38,12 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-          if (param) fetchChannelLink(param);
+          // if (param) fetchChannelLink(param);
+          if (param) {
+            console.log("param", param)
+            decryptLink(param);
+          }
+
         });
       }
     } catch (error) {
@@ -78,17 +83,16 @@ export default function Home() {
   const closeAndRedirect = (channelLink: string) => {
     if (typeof window !== "undefined") {
       console.log("Closing Mini App and Redirecting to:", channelLink);
-      window.location.href = channelLink; 
+      window.location.href = channelLink;
       WebApp.close()
     }
   };
-
   const fetchChannelLink = async (encryptedName: string) => {
     const payload = {
       operation: "fetch-channel-link",
       data: JSON.stringify({ encrpyted_name: encryptedName })
     };
-  
+
     try {
       console.log("Fetching channel link with:", payload);
       const response = await fetch(API_ENDPOINT, {
@@ -98,69 +102,71 @@ export default function Home() {
         },
         body: JSON.stringify(payload)
       });
-  
+
       const channelLink = (await response.text()).replace(/^"|"$/g, '');
       // Directly get plain text response
-  
+
       console.log("Channel link fetched:", channelLink);
-  
+
       // Ensure the fetched link is a valid Telegram link before redirecting
       if (channelLink.startsWith("https://t.me/")) {
         console.log("Redirecting to:", channelLink);
         // WebApp.close(); 
-        
-        if (typeof window !== "undefined") {
-          console.log("Closing Mini App and Redirecting to:", channelLink);
-          window.location.href = channelLink; 
-          WebApp.close()
-        }
-        
+        closeAndRedirect(channelLink);
+        // window.location.href = channelLink; // Redirect
       } else {
         console.error("Invalid channel link received:", channelLink);
       }
     } catch (error) {
       console.error("Error fetching channel link:", error);
     }
+  };
 
 
+  // const decrptLink = async(encryptedName: string) => {
+  //   encrypted_link =  JSON.stringify({ encrpyted_name: encryptedName })
+  //   const SECRET_KEY = "hypernotion";
+
+  //   let decodedBytes = atob(encrypted_link);
+  //   let decrypted = "";
+  //   for (let i = 0; i < decodedBytes.length; i++) {
+  //       decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+  //   }
+  //   channelLink = "http://t.me/+" + decrypted
+  //   console.log("Redirecting to:", channelLink);
+  //   // WebApp.close(); 
+  //   closeAndRedirect(channelLink);
+  // };
+
+  const decryptLink = async (encryptedName) => {
+    const SECRET_KEY = "hypernotion";  // Same secret key as used in encryption
 
     try {
-      console.log("Fetching channel link with:", payload);
-      
-      const response = await fetch(API_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      if (response.redirected) {
-        console.log("Redirecting automatically to:", response.url);
-        window.location.href = response.url; // Redirect in browser
-        WebApp.close();
-      } else {
-        // Read the response to check for 'Location' header manually
-        const result = await response.json();
-        console.log("Response received:", result);
-  
-        const location = response.headers.get("Location");
-        if (location && location.startsWith("https://t.me/")) {
-          console.log("Manually redirecting to:", location);
-          window.location.href = location;
-          WebApp.close();
-        } else {
-          console.error("No valid redirect URL received.");
-        }
+      // Decode Base64 (Fix incorrect decoding)
+      let decodedBytes = atob(encryptedName);
+
+      // Perform XOR decryption
+      let decrypted = "";
+      for (let i = 0; i < decodedBytes.length; i++) {
+        decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
       }
+
+      let channelLink = "http://t.me/+" + decrypted;
+      console.log("Redirecting to:", channelLink);
+
+      // Redirect and close WebApp
+      closeAndRedirect(channelLink);
     } catch (error) {
-      console.error("Error fetching channel link:", error);
+      console.error("Decryption failed:", error);
     }
   };
 
   return (
     <main className="p-4">
-      
+
     </main>
   )
 }
+
+
+
