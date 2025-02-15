@@ -7,7 +7,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Missing SECRET_KEY" }, { status: 500 });
         }
 
-        const { encryptedName } = await req.json();
+        const body = await req.json();
+        const { encryptedName } = body;
+
         if (!encryptedName) {
             return NextResponse.json({ error: "Missing encryptedName" }, { status: 400 });
         }
@@ -30,13 +32,14 @@ export async function POST(req: NextRequest) {
         // Construct the final channel link
         let channelLink = `https://t.me/+${decryptedText}`;
 
-        return NextResponse.json({ channelLink });
+        return NextResponse.json({ channelLink }, { status: 200 });
 
     } catch (error) {
+        console.error("Decryption failed:", error);
         return NextResponse.json({ error: "Decryption failed" }, { status: 500 });
     }
 }
 
-export async function GET() {
+export function GET() {
     return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 }
