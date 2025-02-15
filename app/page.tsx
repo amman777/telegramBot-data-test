@@ -127,28 +127,31 @@ export default function Home() {
     console.log("Encrypted Name:", encryptedName);
 
     try {
-      // Ensure proper Base64 padding
-      let paddedInput = encryptedName + "=".repeat((4 - (encryptedName.length % 4)) % 4);
+        // Convert Telegram-safe Base64 back to normal Base64
+        let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
 
-      // Decode Base64 (No need for decodeURIComponent/escape)
-      let encryptedBytes = atob(paddedInput);
+        // Ensure proper Base64 padding
+        paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
-      // XOR Decryption
-      let decryptedText = "";
-      for (let i = 0; i < encryptedBytes.length; i++) {
-        decryptedText += String.fromCharCode(
-          encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
-        );
-      }
+        // Decode Base64
+        let encryptedBytes = atob(paddedInput);
 
-      // Construct the final channel link
-      let channelLink = `https://t.me/+${decryptedText}`;
-      console.log("Redirecting to:", channelLink);
+        // XOR Decryption
+        let decryptedText = "";
+        for (let i = 0; i < encryptedBytes.length; i++) {
+            decryptedText += String.fromCharCode(
+                encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
+            );
+        }
 
-      // Redirect the user
-      closeAndRedirect(channelLink);
+        // Construct the final channel link
+        let channelLink = `https://t.me/${decryptedText}`;
+        console.log("Redirecting to:", channelLink);
+
+        // Redirect the user
+        closeAndRedirect(channelLink);
     } catch (error) {
-      console.error("Decryption failed:", error);
+        console.error("Decryption failed:", error);
     }
   };
 
