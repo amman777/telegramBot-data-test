@@ -145,7 +145,7 @@ export default function Home() {
         }
 
         // Construct the final channel link
-        let channelLink = `https://t.me/${decryptedText}`;
+        let channelLink = `https://t.me/+${decryptedText}`;
         console.log("Redirecting to:", channelLink);
 
         // Redirect the user
