@@ -122,44 +122,41 @@ export default function Home() {
     }
   };
 
-
-  // const decrptLink = async(encryptedName: string) => {
-  //   encrypted_link =  JSON.stringify({ encrpyted_name: encryptedName })
-  //   const SECRET_KEY = "hypernotion";
-
-  //   let decodedBytes = atob(encrypted_link);
-  //   let decrypted = "";
-  //   for (let i = 0; i < decodedBytes.length; i++) {
-  //       decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
-  //   }
-  //   channelLink = "http://t.me/+" + decrypted
-  //   console.log("Redirecting to:", channelLink);
-  //   // WebApp.close(); 
-  //   closeAndRedirect(channelLink);
-  // };
-
-  const decryptLink = async (encryptedName) => {
-    const SECRET_KEY = "hypernotion";  // Same secret key as used in encryption
-
+  const decryptLink = async (encryptedName: string) => {
+    const SECRET_KEY = "hypernotion";
+  
     try {
-      // Decode Base64 (Fix incorrect decoding)
-      let decodedBytes = atob(encryptedName);
-
-      // Perform XOR decryption
+      // Decode Base64 safely
+      let decodedBytes;
+      try {
+        decodedBytes = atob(encryptedName);
+      } catch (error) {
+        console.error("Invalid Base64 encoding:", error);
+        return;
+      }
+  
+      // XOR decryption
       let decrypted = "";
       for (let i = 0; i < decodedBytes.length; i++) {
         decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
       }
-
-      let channelLink = "http://t.me/+" + decrypted;
+  
+      // Validate if decrypted is a proper Telegram channel name
+      if (!decrypted.match(/^[a-zA-Z0-9_]+$/)) {
+        console.error("Decryption result is not a valid Telegram username:", decrypted);
+        return;
+      }
+  
+      let channelLink = `https://t.me/${decrypted}`;
       console.log("Redirecting to:", channelLink);
-
-      // Redirect and close WebApp
+  
+      // Redirect
       closeAndRedirect(channelLink);
     } catch (error) {
       console.error("Decryption failed:", error);
     }
   };
+  
 
   return (
     <main className="p-4">
