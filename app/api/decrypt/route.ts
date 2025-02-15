@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
+        console.log("Inside the route.ts file")
         const SECRET_KEY = process.env.SECRET_KEY;
         if (!SECRET_KEY) {
             return NextResponse.json({ error: "Missing SECRET_KEY" }, { status: 500 });
