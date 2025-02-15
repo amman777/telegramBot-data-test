@@ -4,7 +4,7 @@ import WebApp from '@twa-dev/sdk'
 import { useEffect, useState } from 'react'
 
 const API_ENDPOINT = 'https://iutqwuscug.execute-api.ap-south-1.amazonaws.com/telegram-bot-handler';
-const toddle = "hypernotion";
+
 // Define the interface for user data
 interface UserData {
   id: number;
@@ -14,6 +14,7 @@ interface UserData {
   language_code: string;
   is_premium?: boolean;
 }
+let toddle = ""
 
 export default function Home() {
   const [startAppParam, setStartAppParam] = useState<string | null>(null)
@@ -38,7 +39,7 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-          
+          toddle = "dangerouslySetInnerHTML";
           if (param) decryptLink(param);
 
 
@@ -85,55 +86,38 @@ export default function Home() {
       WebApp.close()
     }
   };
-  // const decryptLink = async (encryptedName: string) => {
+  const decryptLink = async (encryptedName: string) => {
     
-  //   try {
+    try {
     
-  //       let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
+        let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
 
       
-  //       paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
+        paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
   
-  //       let encryptedBytes = atob(paddedInput);
+        let encryptedBytes = atob(paddedInput);
 
        
-  //       let decryptedText = "";
-  //       for (let i = 0; i < encryptedBytes.length; i++) {
-  //           decryptedText += String.fromCharCode(
-  //               encryptedBytes.charCodeAt(i) ^ toddle.charCodeAt(i % toddle.length)
-  //           );
-  //       }
+        let decryptedText = "";
+        for (let i = 0; i < encryptedBytes.length; i++) {
+            decryptedText += String.fromCharCode(
+                encryptedBytes.charCodeAt(i) ^ toddle.charCodeAt(i % toddle.length)
+            );
+        }
 
        
-  //       let channelLink = `https://t.me/+${decryptedText}`;
+        let channelLink = `https://t.me/+${decryptedText}`;
       
 
         
-  //       closeAndRedirect(channelLink);
-  //   } catch (error) {
-  //       console.error("Decryption failed:", error);
-  //   }
-  // };
-
-  const decryptLink = async (encryptedName: string) => {
-    try {
-      const response = await fetch('/api/decrypt', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ encryptedName })
-      });
-  
-      const data = await response.json();
-      if (data.channelLink) {
-        closeAndRedirect(data.channelLink);
-      } else {
-        console.error("Decryption API error:", data.error);
-      }
+        closeAndRedirect(channelLink);
     } catch (error) {
-      console.error("Failed to fetch decrypted link:", error);
+        console.error("Decryption failed:", error);
     }
   };
+
+  
   
 
 
