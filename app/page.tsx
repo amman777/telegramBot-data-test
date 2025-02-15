@@ -28,7 +28,7 @@ export default function Home() {
       }
       console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
       // Get startapp parameter safely
-      const param = WebApp.initDataUnsafe?.start_param || null;
+      let param = WebApp.initDataUnsafe?.start_param || null;
       console.log("The params value is", param)
 
 
