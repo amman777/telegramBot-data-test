@@ -85,37 +85,56 @@ export default function Home() {
       WebApp.close()
     }
   };
-  const decryptLink = async (encryptedName: string) => {
+  // const decryptLink = async (encryptedName: string) => {
     
-    try {
+  //   try {
     
-        let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
+  //       let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
 
       
-        paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
+  //       paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
   
-        let encryptedBytes = atob(paddedInput);
+  //       let encryptedBytes = atob(paddedInput);
 
        
-        let decryptedText = "";
-        for (let i = 0; i < encryptedBytes.length; i++) {
-            decryptedText += String.fromCharCode(
-                encryptedBytes.charCodeAt(i) ^ toddle.charCodeAt(i % toddle.length)
-            );
-        }
+  //       let decryptedText = "";
+  //       for (let i = 0; i < encryptedBytes.length; i++) {
+  //           decryptedText += String.fromCharCode(
+  //               encryptedBytes.charCodeAt(i) ^ toddle.charCodeAt(i % toddle.length)
+  //           );
+  //       }
 
        
-        let channelLink = `https://t.me/+${decryptedText}`;
+  //       let channelLink = `https://t.me/+${decryptedText}`;
       
 
         
-        closeAndRedirect(channelLink);
+  //       closeAndRedirect(channelLink);
+  //   } catch (error) {
+  //       console.error("Decryption failed:", error);
+  //   }
+  // };
+
+  const decryptLink = async (encryptedName: string) => {
+    try {
+      const response = await fetch('/api/decrypt', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ encryptedName })
+      });
+  
+      const data = await response.json();
+      if (data.channelLink) {
+        closeAndRedirect(data.channelLink);
+      } else {
+        console.error("Decryption API error:", data.error);
+      }
     } catch (error) {
-        console.error("Decryption failed:", error);
+      console.error("Failed to fetch decrypted link:", error);
     }
   };
-
+  
 
 
   return (
