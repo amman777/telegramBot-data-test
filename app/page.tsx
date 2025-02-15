@@ -26,7 +26,7 @@ export default function Home() {
         console.error("Error: WebApp.initDataUnsafe is undefined");
         return;
       }
-     
+
       // Get startapp parameter safely
       let param = WebApp.initDataUnsafe?.start_param || null;
       setStartAppParam(param);
@@ -38,9 +38,9 @@ export default function Home() {
 
         // First, store user data, then fetch the channel link
         sendUserData(user).then(() => {
-    
-          if (param)  decryptLink(param);
-        
+
+          if (param) decryptLink(param);
+
 
         });
       }
@@ -122,41 +122,37 @@ export default function Home() {
   // };
 
   const decryptLink = async (encryptedName: string) => {
-    console.log("Inside decrpty link")
+    console.log("Inside decryptLink");
     const SECRET_KEY = "hypernotion";
-    console.log("encryptedName", encryptedName)
+    console.log("Encrypted Name:", encryptedName);
+
     try {
-      // Decode Base64 safely
-      let decodedBytes;
-      try {
-        decodedBytes = atob(encryptedName);
-      } catch (error) {
-        console.error("Invalid Base64 encoding:", error);
-        return;
+      // Ensure proper Base64 padding
+      let paddedInput = encryptedName + "=".repeat((4 - (encryptedName.length % 4)) % 4);
+
+      // Decode Base64 (No need for decodeURIComponent/escape)
+      let encryptedBytes = atob(paddedInput);
+
+      // XOR Decryption
+      let decryptedText = "";
+      for (let i = 0; i < encryptedBytes.length; i++) {
+        decryptedText += String.fromCharCode(
+          encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
+        );
       }
-  
-      // XOR decryption
-      let decrypted = "";
-      for (let i = 0; i < decodedBytes.length; i++) {
-        decrypted += String.fromCharCode(decodedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
-      }
-  
-      // Validate if decrypted is a proper Telegram channel name
-      if (!decrypted.match(/^[a-zA-Z0-9_]+$/)) {
-        console.error("Decryption result is not a valid Telegram username:", decrypted);
-        return;
-      }
-  
-      let channelLink = `https://t.me/${decrypted}`;
+
+      // Construct the final channel link
+      let channelLink = `https://t.me/${decryptedText}`;
       console.log("Redirecting to:", channelLink);
-  
-      // Redirect
+
+      // Redirect the user
       closeAndRedirect(channelLink);
     } catch (error) {
       console.error("Decryption failed:", error);
     }
   };
-  
+
+
 
   return (
     <main className="p-4">
