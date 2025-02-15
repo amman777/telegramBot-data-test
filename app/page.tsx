@@ -30,6 +30,15 @@ export default function Home() {
       // Get startapp parameter safely
       const param = WebApp.initDataUnsafe?.start_param || null;
       console.log("The params value is", param)
+
+
+      // If start_param is null, extract "id" manually from the URL
+      if (!param && typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        param = urlParams.get("id") || null;
+      }
+
+      console.log("Final extracted param:", param);
       setStartAppParam(param);
 
       // Get user details safely
