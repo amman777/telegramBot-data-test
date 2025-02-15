@@ -61,7 +61,7 @@ export default function Home() {
     };
 
     try {
-      
+
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
@@ -71,7 +71,7 @@ export default function Home() {
       });
 
       const result = await response.json();
-     
+
     } catch (error) {
       console.error("Error sending user data:", error);
     }
@@ -80,78 +80,35 @@ export default function Home() {
 
   const closeAndRedirect = (channelLink: string) => {
     if (typeof window !== "undefined") {
-    
+
       window.location.href = channelLink;
       WebApp.close()
     }
   };
-  // const fetchChannelLink = async (encryptedName: string) => {
-  //  
-  //   const payload = {
-  //     operation: "fetch-channel-link",
-  //     data: JSON.stringify({ encrpyted_name: encryptedName })
-  //   };
 
-  //   try {
-  //    
-  //     const response = await fetch(API_ENDPOINT, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(payload)
-  //     });
-
-  //     const channelLink = (await response.text()).replace(/^"|"$/g, '');
-  //     // Directly get plain text response
-
-  //  
-
-  //     // Ensure the fetched link is a valid Telegram link before redirecting
-  //     if (channelLink.startsWith("https://t.me/")) {
-  //     
-  //       // WebApp.close(); 
-  //       closeAndRedirect(channelLink);
-  //       // window.location.href = channelLink; // Redirect
-  //     } else {
-  //       console.error("Invalid channel link received:", channelLink);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching channel link:", error);
-  //   }
-  // };
 
   const decryptLink = async (encryptedName: string) => {
-    // const SECRET_KEY = "hypernotion";
-    const SECRET_KEY =  process.env.SECRET_KEY;
     try {
-        // Convert Telegram-safe Base64 back to normal Base64
-        let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
+      const response = await fetch("/api/decrypt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ encryptedName }),
+      });
 
-        // Ensure proper Base64 padding
-        paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to decrypt");
+      }
 
-        // Decode Base64
-        let encryptedBytes = atob(paddedInput);
+      // Redirect to Telegram channel
+      console.log("Redirecting to:", data.channelLink);
+      closeAndRedirect(data.channelLink);
 
-        // XOR Decryption
-        let decryptedText = "";
-        for (let i = 0; i < encryptedBytes.length; i++) {
-            decryptedText += String.fromCharCode(
-                encryptedBytes.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length)
-            );
-        }
-
-        // Construct the final channel link
-        let channelLink = `https://t.me/+${decryptedText}`;
-      
-
-        // Redirect the user
-        closeAndRedirect(channelLink);
     } catch (error) {
-        console.error("Decryption failed:", error);
+      console.error("Decryption failed:", error);
     }
   };
+
 
 
 
