@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
-        console.log("Inside the route.ts file")
         const SECRET_KEY = process.env.SECRET_KEY;
         if (!SECRET_KEY) {
             return NextResponse.json({ error: "Missing SECRET_KEY" }, { status: 500 });
@@ -15,8 +14,6 @@ export async function POST(req: NextRequest) {
 
         // Convert Telegram-safe Base64 back to normal Base64
         let paddedInput = encryptedName.replace(/-/g, "+").replace(/_/g, "/");
-
-        // Ensure proper Base64 padding
         paddedInput += "=".repeat((4 - (paddedInput.length % 4)) % 4);
 
         // Decode Base64
@@ -38,4 +35,8 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         return NextResponse.json({ error: "Decryption failed" }, { status: 500 });
     }
+}
+
+export async function GET() {
+    return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 }
