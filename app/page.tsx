@@ -124,7 +124,7 @@ export default function Home() {
   const decryptLink = async (encryptedName: string) => {
     console.log("Inside decrpty link")
     const SECRET_KEY = "hypernotion";
-  
+    console.log("encryptedName", encryptedName)
     try {
       // Decode Base64 safely
       let decodedBytes;
