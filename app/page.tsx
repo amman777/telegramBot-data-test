@@ -79,13 +79,22 @@ export default function Home() {
   };
 
 
+  // const closeAndRedirect = (channelLink: string) => {
+  //   if (typeof window !== "undefined") {
+    
+  //     window.location.href = channelLink;
+  //     WebApp.close()
+  //   }
+  // };
   const closeAndRedirect = (channelLink: string) => {
     if (typeof window !== "undefined") {
-    
-      window.location.href = channelLink;
-      WebApp.close()
+      setTimeout(() => {
+        window.location.href = channelLink;
+        WebApp.close();
+      }, 1000); // 1-second delay
     }
   };
+  
   const decryptLink = async (encryptedName: string) => {
     
     try {
